@@ -1,19 +1,14 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class CidadeCSV {
 
-    //Caminho relativo dos arquivos CSV
-    private static String dir = "./uploads/Canada__Vancouver.csv";
-
 
     //Método para receber uma cidade do arquivo CSV
-
-    public static ArrayList<Cidade> ListarCidade() {
-        ArrayList<Cidade> listaCidades = new ArrayList<Cidade>();
+    public static ArrayList<Cidade> lerCidadeCSV(String dir) {
+        ArrayList<Cidade> listaCidades = new ArrayList<>();
 
         try {
             // Abrir o leitor de arquivos
@@ -47,3 +42,6 @@ public class CidadeCSV {
         return listaCidades;
     }
 }
+
+
+
