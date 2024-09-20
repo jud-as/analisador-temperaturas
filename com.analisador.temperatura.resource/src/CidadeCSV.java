@@ -7,7 +7,7 @@ public class CidadeCSV {
 
 
     //Método para receber uma cidade do arquivo CSV
-    public static ArrayList<Cidade> listarCidade(String dir) {
+    public static ArrayList<Cidade> lerCidadeCSV(String dir) {
         ArrayList<Cidade> listaCidades = new ArrayList<>();
 
         try {
