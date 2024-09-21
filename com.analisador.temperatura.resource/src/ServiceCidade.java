@@ -4,43 +4,31 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ServiceCidade {
 
     //Método para retornar todas as cidades de um diretório
-    public static ArrayList<Cidade> getDirCidades(String dir) {
-        ArrayList<Cidade> listaCidades = new ArrayList<>();
+    public static Map<String, ArrayList<Cidade>> getDirCidades(String dir) {
+        Map<String, ArrayList<Cidade>> cidadesPorArquivo = new HashMap<>();
 
         File[] listaArquivos = leitorDiretorio(dir); //Lê todos os arquivos do diretório
 
         for (File arquivo : listaArquivos) { //Percorrer todos os arquvios do diretório especificado
-
-            listaCidades = CidadeCSV.lerCidadeCSV(dir + arquivo.getName());
-            for (Cidade cidade : listaCidades) {
-                System.out.println(cidade); //Print para depuração
-            }
-
+            ArrayList<Cidade> listaCidades = CidadeCSV.lerCidadeCSV(dir + arquivo.getName());
+            cidadesPorArquivo.put(arquivo.getName(), listaCidades);
         }
 
-        return listaCidades;
+        return cidadesPorArquivo;
     }
-
 
     //Método para ler todos os arquivos do diretório
     public static File[] leitorDiretorio(String dir) {
-
-        File[] arquivos; //Array de arquivos
         File diretorio = new File(dir); //Diretório
-        arquivos = diretorio.listFiles(); //Lista de arquivos do diretório
-
-        return arquivos;
+        return diretorio.listFiles(); //Retorna todos os arquivos do diretório
     }
 
-    //Método para escrever e exportar um arquivo TXT
-    public static void escreverTXT() {
-
-
-    }
 
 
 

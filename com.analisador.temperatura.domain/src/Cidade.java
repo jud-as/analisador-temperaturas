@@ -56,5 +56,6 @@ public class Cidade {
                 ", temperatura=" + temperatura +
                 '}';
     }
+
 }
 
