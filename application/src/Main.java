@@ -16,11 +16,12 @@ public class Main {
         //Obter todas as cidades do diretório agrupadas por arquivo
         Map<String, ArrayList<Cidade>> cidadesPorArquivo = ServiceCidade.getDirCidades(dir);
 
-        // Agrupar dados por arquivo, ano e mês
-        Map<String, Map<Integer, Map<Integer, List<Cidade>>>> agrupamentoFinal = CalculoCidades.agruparPorArquivoAnoMes(cidadesPorArquivo);
 
-        // Exportar os resultados para um arquivo .txt
-        exportarDadosParaTxt(agrupamentoFinal, "./resultado.txt");
+        // Calcula as temperaturas
+        Map<String, Map<Integer, Map<Integer, Map<String, Double>>>> temperaturasPorCidade = CalculoCidades.calcularTemperaturas(cidadesPorArquivo);
+
+        // Exporta para TXT
+        CalculoCidades.exportarParaTxt(temperaturasPorCidade, "resultado.txt");
 
     }
 
