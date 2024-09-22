@@ -1,4 +1,5 @@
 
+
 public class Cidade {
 
     private String pais;
@@ -55,5 +56,6 @@ public class Cidade {
                 ", temperatura=" + temperatura +
                 '}';
     }
+
 }
 
