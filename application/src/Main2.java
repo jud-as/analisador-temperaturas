@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class Main {
+public class Main2 {
 
     // Caminho relativo do diretório
     public static String dir = "./uploads/";
@@ -27,7 +27,7 @@ public class Main {
             Map<String, Map<Integer, Map<Integer, Map<String, Double>>>> temperaturasPorCidade = new HashMap<>();
 
             // Cria um ExecutorService com um pool de threads fixo
-            ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+            ExecutorService cidadeExecutor = Executors.newFixedThreadPool(threadCount);
 
             // Itera sobre cada entrada no mapa de cidades por arquivo
             for (Map.Entry<String, ArrayList<Cidade>> entry : cidadesPorArquivo.entrySet()) {
@@ -44,14 +44,28 @@ public class Main {
                     int end = Math.min(start + chunkSize, listaCidades.size());
                     List<Cidade> sublist = listaCidades.subList(start, end);
 
-                    executor.execute(new CidadeProcessor(sublist, temperaturasPorCidade, nomeArquivo));
+                    cidadeExecutor.execute(() -> {
+                        Map<Integer, Map<Integer, List<Cidade>>> cidadesAgrupadas = CalculoCidades.agruparPorAnoMes(new ArrayList<>(sublist));
+                        ExecutorService anoExecutor = Executors.newCachedThreadPool();
+                        for (Map.Entry<Integer, Map<Integer, List<Cidade>>> anoEntry : cidadesAgrupadas.entrySet()) {
+                            int ano = anoEntry.getKey();
+                            Map<Integer, List<Cidade>> cidadesPorMes = anoEntry.getValue();
+                            anoExecutor.execute(new AnoProcessor(ano, cidadesPorMes, temperaturasPorCidade, nomeArquivo));
+                        }
+                        anoExecutor.shutdown();
+                        try {
+                            anoExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
             }
 
             // Aguarda a conclusão de todas as tarefas
-            executor.shutdown();
+            cidadeExecutor.shutdown();
             try {
-                executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+                cidadeExecutor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -61,8 +75,6 @@ public class Main {
 
             // Imprime o tempo de execução
             System.out.println("Thread count: " + threadCount + ", Tempo de execução: " + (System.currentTimeMillis() - tempoInicial) + "ms");
-
-
         }
     }
 }
